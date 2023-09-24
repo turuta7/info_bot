@@ -19,7 +19,7 @@ bot.command("start", (ctx) => {
     .resize()
     .oneTime();
 
-  // ctx.reply("Выберите опцию:", keyboard);
+  ctx.reply("Привет", keyboard);
 });
 
 // Команда /set - начать настройку таймера
@@ -75,4 +75,4 @@ bot.hears("Команда 1", (ctx) => {
 });
 
 // Запуск бота
-bot.launch();
+bot.launch().then(() => console.log("start OK"));
