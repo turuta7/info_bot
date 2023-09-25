@@ -45,6 +45,7 @@ bot.hears("info", (ctx) => {
   ctx.reply(`time: ${timerData.time}`);
   ctx.reply(`message: ${timerData.message}`);
   timerData.task ? ctx.reply(`task: OK`) : ctx.reply(`task: null`);
+  ctx.reply(`dateServer: ${new Date()}`);
 });
 bot.hears("Clean", (ctx) => {
   ctx.reply(`Clean timer`);
