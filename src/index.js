@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 const { Telegraf, Markup } = require("telegraf");
 const {
   generateTimeButtons,
@@ -7,6 +9,15 @@ const {
   cleanTimer,
 } = require("./func");
 // Замените 'YOUR_BOT_TOKEN' на токен вашего бота
+
+const lockFilePath = path.join(__dirname, "bot.lock");
+// Попытка получить блокировку
+if (fs.existsSync(lockFilePath)) {
+  console.log("Another instance of the bot is already running.");
+  process.exit(1); // Выход с ошибкой
+}
+
+fs.writeFileSync(lockFilePath, "locked");
 const bot = new Telegraf(process.env.API_TELEGRAM);
 
 bot.command("start", (ctx) => {
@@ -74,15 +85,25 @@ bot.hears("Команда 1", (ctx) => {
   ctx.reply("Вы выбрали Команду 1");
 });
 
-const main = async () => {
-  // Запуск бота
-  try {
-    bot.botInfo = await bot.telegram.getMe();
-    console.log("Bot started");
-    bot.launch();
-  } catch (err) {
-    console.error("Ошибка запуска бота", err);
-  }
-};
+// const main = async () => {
+//   // Запуск бота
+//   try {
+//     bot.botInfo = await bot.telegram.getMe();
+//     console.log("Bot started");
+//     bot.launch();
+//   } catch (err) {
+//     console.error("Ошибка запуска бота", err);
+//   }
+// };
 
-main();
+// main();
+
+bot.launch().then(() => {
+  console.log("Bot is running...");
+});
+
+// В случае завершения работы бота, освободите блокировку
+process.on("SIGINT", () => {
+  fs.unlinkSync(lockFilePath);
+  process.exit();
+});
