@@ -1,4 +1,10 @@
 const app = require("./server");
+const { DateTime } = require("luxon"); // Додаємо luxon
+const now = DateTime.now().setZone("Europe/Kiev");
+
+console.log("====================================");
+console.log(now.offset * 60 * 1000);
+console.log("====================================");
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");

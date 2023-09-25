@@ -1,4 +1,4 @@
-const cron = require("node-cron");
+const cron = require("node-cron-tz");
 // Замените 'YOUR_CHAT_ID' на идентификатор вашей группы
 const chatId = process.env.ID_CHAT;
 
