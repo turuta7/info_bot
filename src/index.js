@@ -9,36 +9,35 @@ const {
 } = require("./func");
 const bot = new Telegraf(process.env.API_TELEGRAM);
 
-const port = process.env.PORT || 3000;
-
 bot.command("start", (ctx) => {
   const keyboard = Markup.keyboard([
-    ["Задати текст і час"]["Перевірити дані"],
-    ["Очистити"],
-  ])
-    .resize()
-    .extra();
+    ["set", "info"],
+    // ["set timer", "kjnk"],
+    // ["Команда 3", "Команда 4"],
+    ["Clean"],
+  ]).resize();
 
-  const userName = ctx.from.first_name || "";
+  const userName = ctx.from.first_name;
+  console.log(ctx, userName);
   ctx.reply(`Привет ${userName}`, keyboard);
 });
 
 // Команда /set - начать настройку таймера
-bot.hears("Задати текст і час", (ctx) => {
-  ctx.reply("Виберіть час для відправлення повідомлення:", {
+bot.hears("set", (ctx) => {
+  ctx.reply("Выберите время для отправки сообщения:", {
     reply_markup: {
       inline_keyboard: generateTimeButtons(),
     },
   });
   timerData.time = null;
 });
-bot.hears("Перевірити дані", (ctx) => {
+bot.hears("info", (ctx) => {
   ctx.reply(`time: ${timerData.time}`);
   ctx.reply(`message: ${timerData.message}`);
   timerData.task ? ctx.reply(`task: OK`) : ctx.reply(`task: null`);
 });
-bot.hears("Очистити", (ctx) => {
-  ctx.reply("Очищенно");
+bot.hears("Clean", (ctx) => {
+  ctx.reply(`Clean timer`);
   cleanTimer();
 });
 
@@ -47,9 +46,9 @@ bot.action(/(\d{2}:\d{2})/, (ctx) => {
   if (!timerData.time) {
     const selectedTime = ctx.match[1];
     timerData.time = selectedTime;
-    ctx.reply("Введіть повідомлення для відправки всім в групі:");
+    ctx.reply("Введите сообщение для отправки всем в группе:");
   } else {
-    ctx.reply("Будь ласка, виберіть тільки час спочатку");
+    ctx.reply("Пожалуйста, выберите только время сначала.");
   }
 });
 
@@ -63,13 +62,32 @@ bot.hears(/.*/, (ctx) => {
     timerData.message = ctx.message.text;
     const time = timerData.time;
     ctx.reply(
-      `Таймер для надсилання повідомлення о ${time} усім у групі налаштований.`
+      `Настроен таймер для отправки сообщения в ${time} всем в группе.`
     );
     scheduleTimer(timerData.time, timerData.message);
   } else {
-    ctx.reply("Будь ласка, оберіть час і введіть повідомлення для відправки");
+    ctx.reply("Пожалуйста, выберите время и введите сообщение для отправкиqq.");
   }
 });
+
+bot.hears("Команда 1", (ctx) => {
+  ctx.reply("Вы выбрали Команду 1");
+});
+
+// const main = async () => {
+//   // Запуск бота
+//   try {
+//     bot.botInfo = await bot.telegram.getMe();
+//     console.log("Bot started");
+//     bot.launch();
+//   } catch (err) {
+//     console.error("Ошибка запуска бота", err);
+//   }
+// };
+
+// main();
+
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("SERVER START");
