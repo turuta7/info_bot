@@ -27,7 +27,8 @@ bot.command("start", (ctx) => {
 
   // const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
   if (ctx.update.message.from.id === ctx.update.message.chat.id) {
-    ctx.reply("Привет1", keyboard);
+    const username = ctx.from.username;
+    ctx.reply(`Hello ${username}`, keyboard);
   } else {
     ctx.reply("", {
       reply_markup: { remove_keyboard: true },
@@ -96,16 +97,13 @@ app.listen(port, () => {
         .get(process.env.URL)
         .then(function (response) {
           // handle success
-          console.log(response);
+          console.log(response.data);
         })
         .catch(function (error) {
           // handle error
           console.log(error);
-        })
-        .finally(function () {
-          // always executed
         });
-    }, 20000);
+    }, 15 * 60 * 1000);
   }
 });
 
