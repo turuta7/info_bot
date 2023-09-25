@@ -87,9 +87,6 @@ function scheduleTimer(time, message, timezone) {
       () => {
         // Отправка сообщения всем в группе
         bot.telegram.sendMessage(chatId, message);
-      },
-      {
-        timezone: timezone, // Додайте таймзону
       }
     );
   }
