@@ -25,12 +25,11 @@ bot.command("start", (ctx) => {
     remove_keyboard: true,
   };
 
-  ctx.reply("Клавіатура видалена.", { reply_markup: replyMarkup });
   const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
   if (ctx.chat.id !== bot.telegram.botInfo.id) {
-    ctx.reply("Привет", keyboard);
+    ctx.reply("Привет1", keyboard);
   } else {
-    ctx.reply("Привет", replyMarkup);
+    ctx.reply("Привет2", replyMarkup);
   }
 });
 
