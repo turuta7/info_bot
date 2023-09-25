@@ -2,6 +2,7 @@ const app = require("./server");
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 const { Telegraf, Markup } = require("telegraf");
 const {
   generateTimeButtons,
