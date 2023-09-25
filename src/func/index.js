@@ -1,4 +1,5 @@
-const cron = require("node-cron-tz");
+const cron = require("node-cron");
+const { DateTime } = require("luxon");
 // Замените 'YOUR_CHAT_ID' на идентификатор вашей группы
 const chatId = process.env.ID_CHAT;
 
@@ -14,6 +15,39 @@ const cleanTimer = () => {
   timerData.message = null;
   timerData.task = null;
 };
+
+function addTimeZone(timeString) {
+  console.log(timeString);
+  // Ваша строка времени
+  const dt = DateTime.now().setZone("Europe/Kiev");
+  const match = /(\d{2}):(\d{2})/.exec(timeString);
+
+  if (match) {
+    let hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+    console.log(dt.offset / 60);
+    // Добавляем 3 часа
+    hours += dt.offset / 60;
+
+    // Обработка перехода на следующий день, если часы стали больше 23
+    if (hours >= 24) {
+      hours -= 24;
+      // Если нужно учитывать переход на следующий день, увеличьте дату
+      // Например: now.setDate(now.getDate() + 1);
+    }
+    // Выводим результат
+    console.log(
+      `${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`
+    );
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  } else {
+    console.error("Неверный формат времени");
+  }
+}
 
 // Генерация кнопок для выбора времени
 function generateTimeButtons() {
@@ -35,7 +69,18 @@ function scheduleTimer(time, message, timezone) {
   if (timerData.task) {
     timerData.task.destroy();
   }
-  const scheduledTime = parseTime(time);
+  let scheduledTime = null;
+  const now = new Date();
+  const timeZoneOffset = now.getTimezoneOffset();
+
+  if (timeZoneOffset === 0) {
+    console.log("Сервер работает в часовом поясе UTC.");
+
+    scheduledTime = parseTime(addTimeZone(time));
+  } else {
+    scheduledTime = parseTime(addTimeZone(time));
+  }
+  console.log("scheduledTime: ", scheduledTime);
   if (scheduledTime) {
     timerData.task = cron.schedule(
       scheduledTime,

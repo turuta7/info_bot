@@ -21,15 +21,15 @@ fs.writeFileSync(lockFilePath, "locked");
 const bot = new Telegraf(process.env.API_TELEGRAM);
 
 bot.command("start", (ctx) => {
-  const replyMarkup = {
-    remove_keyboard: true,
-  };
-
   const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
-  if (ctx.chat.id !== bot.telegram.botInfo.id) {
+
+  // const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
+  if (ctx.update.message.from.id === ctx.update.message.chat.id) {
     ctx.reply("Привет1", keyboard);
   } else {
-    ctx.reply("Привет2", replyMarkup);
+    ctx.reply("Привет2", {
+      reply_markup: { remove_keyboard: true },
+    });
   }
 });
 
