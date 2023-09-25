@@ -88,27 +88,32 @@ bot.hears(/.*/, (ctx) => {
 const port = process.env.PORT || 3000;
 
 app.listen(port, async () => {
-  console.log("SERVER START");
-  bot.launch();
-  await bot.startPolling({ restart: true });
-  // Enable graceful stop
-  process.once("SIGINT", () => bot.stop("SIGINT"));
-  process.once("SIGTERM", () => bot.stop("SIGTERM"));
-  process.on('SIGQUIT', stop);
-  process.on('SIGINT', stop);
-  if (process.env.URL && !timerAxios) {
-    timerAxios = setInterval(() => {
-      axios
-        .get(process.env.URL)
-        .then(function (response) {
-          // handle success
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        });
-    }, 15 * 60 * 1000);
+  try {
+
+    console.log("SERVER START");
+    bot.launch();
+    await bot.startPolling({ restart: true });
+    // Enable graceful stop
+    process.once("SIGINT", () => bot.stop("SIGINT"));
+    process.once("SIGTERM", () => bot.stop("SIGTERM"));
+    process.on('SIGQUIT', stop);
+    process.on('SIGINT', stop);
+    if (process.env.URL && !timerAxios) {
+      timerAxios = setInterval(() => {
+        axios
+          .get(process.env.URL)
+          .then(function (response) {
+            // handle success
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          });
+      }, 15 * 60 * 1000);
+    }
+  } catch (error) {
+    console.log("ERROR: ", error);
   }
 });
 
