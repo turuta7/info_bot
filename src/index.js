@@ -91,6 +91,9 @@ app.listen(port, () => {
   console.log("SERVER START");
   bot.launch();
 
+  // Enable graceful stop
+  process.once("SIGINT", () => bot.stop("SIGINT"));
+  process.once("SIGTERM", () => bot.stop("SIGTERM"));
   if (process.env.URL && !timerAxios) {
     timerAxios = setInterval(() => {
       axios
