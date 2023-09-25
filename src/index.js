@@ -87,13 +87,15 @@ bot.hears(/.*/, (ctx) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log("SERVER START");
   bot.launch();
-
+  await bot.startPolling({ restart: true });
   // Enable graceful stop
   process.once("SIGINT", () => bot.stop("SIGINT"));
   process.once("SIGTERM", () => bot.stop("SIGTERM"));
+  process.on('SIGQUIT', stop);
+  process.on('SIGINT', stop);
   if (process.env.URL && !timerAxios) {
     timerAxios = setInterval(() => {
       axios
