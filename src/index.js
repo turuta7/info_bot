@@ -17,7 +17,7 @@ if (fs.existsSync(lockFilePath)) {
   console.log("Another instance of the bot is already running.");
   process.exit(1); // Выход с ошибкой
 }
-
+let timerAxios = null;
 fs.writeFileSync(lockFilePath, "locked");
 const bot = new Telegraf(process.env.API_TELEGRAM);
 sendBot(bot);
@@ -28,7 +28,7 @@ bot.command("start", (ctx) => {
   if (ctx.update.message.from.id === ctx.update.message.chat.id) {
     ctx.reply("Привет1", keyboard);
   } else {
-    ctx.reply("Привет2", {
+    ctx.reply("", {
       reply_markup: { remove_keyboard: true },
     });
   }
@@ -83,28 +83,29 @@ bot.hears(/.*/, (ctx) => {
   }
 });
 
-bot.hears("Команда 1", (ctx) => {
-  ctx.reply("Вы выбрали Команду 1");
-});
-
-// const main = async () => {
-//   // Запуск бота
-//   try {
-//     bot.botInfo = await bot.telegram.getMe();
-//     console.log("Bot started");
-//     bot.launch();
-//   } catch (err) {
-//     console.error("Ошибка запуска бота", err);
-//   }
-// };
-
-// main();
-
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("SERVER START");
   bot.launch();
+
+  if (process.env.URL && !timerAxios) {
+    timerAxios = setInterval(() => {
+      axios
+        .get(process.env.URL)
+        .then(function (response) {
+          // handle success
+          console.log(response);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .finally(function () {
+          // always executed
+        });
+    }, 20000);
+  }
 });
 
 // В случае завершения работы бота, освободите блокировку
