@@ -27,7 +27,7 @@ function addTimeZone(timeString) {
     const minutes = parseInt(match[2], 10);
     console.log(dt.offset / 60);
     // Добавляем 3 часа
-    hours += dt.offset / 60;
+    hours -= dt.offset / 60;
 
     // Обработка перехода на следующий день, если часы стали больше 23
     if (hours >= 24) {
