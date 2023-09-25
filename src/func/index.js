@@ -3,6 +3,8 @@ const { DateTime } = require("luxon");
 // Замените 'YOUR_CHAT_ID' на идентификатор вашей группы
 const chatId = process.env.ID_CHAT;
 
+let bot = null;
+
 // Объект для хранения данных о таймере
 const timerData = {
   time: null, // Время для отправки сообщения
@@ -48,7 +50,10 @@ function addTimeZone(timeString) {
     console.error("Неверный формат времени");
   }
 }
-
+function sendBot(serBot) {
+  bot = serBot;
+  if (bot) console.log("Bot - ok");
+}
 // Генерация кнопок для выбора времени
 function generateTimeButtons() {
   const buttons = [];
@@ -82,13 +87,10 @@ function scheduleTimer(time, message, timezone) {
   }
   console.log("scheduledTime: ", scheduledTime);
   if (scheduledTime) {
-    timerData.task = cron.schedule(
-      scheduledTime,
-      () => {
-        // Отправка сообщения всем в группе
-        bot.telegram.sendMessage(chatId, message);
-      }
-    );
+    timerData.task = cron.schedule(scheduledTime, () => {
+      // Отправка сообщения всем в группе
+      bot.telegram.sendMessage(chatId, message);
+    });
   }
 }
 
@@ -110,4 +112,5 @@ module.exports = {
   scheduleTimer,
   timerData,
   cleanTimer,
+  sendBot,
 };

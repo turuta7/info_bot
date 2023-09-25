@@ -8,6 +8,7 @@ const {
   scheduleTimer,
   timerData,
   cleanTimer,
+  sendBot,
 } = require("./func");
 // Замените 'YOUR_BOT_TOKEN' на токен вашего бота
 const lockFilePath = path.join(__dirname, "bot.lock");
@@ -19,7 +20,7 @@ if (fs.existsSync(lockFilePath)) {
 
 fs.writeFileSync(lockFilePath, "locked");
 const bot = new Telegraf(process.env.API_TELEGRAM);
-
+sendBot(bot);
 bot.command("start", (ctx) => {
   const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
 
