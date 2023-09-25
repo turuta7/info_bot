@@ -78,7 +78,7 @@ function scheduleTimer(time, message, timezone) {
 
     scheduledTime = parseTime(addTimeZone(time));
   } else {
-    scheduledTime = parseTime(addTimeZone(time));
+    scheduledTime = parseTime(time);
   }
   console.log("scheduledTime: ", scheduledTime);
   if (scheduledTime) {
