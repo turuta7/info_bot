@@ -75,7 +75,7 @@ bot.hears(/.*/, (ctx) => {
     ctx.reply(
       `Настроен таймер для отправки сообщения в ${time} всем в группе.`
     );
-    scheduleTimer(timerData.time, timerData.message);
+    scheduleTimer(timerData.time, timerData.message, "Europe/Kiev");
   } else {
     ctx.reply("Пожалуйста, выберите время и введите сообщение для отправкиqq.");
   }

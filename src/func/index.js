@@ -27,21 +27,26 @@ function generateTimeButtons() {
       buttons.push([{ text: time, callback_data: time }]);
     }
   }
-  console.log("bbb", buttons);
   return buttons;
 }
 
 // Функция для настройки и запуска таймера
-function scheduleTimer(time, message) {
+function scheduleTimer(time, message, timezone) {
   if (timerData.task) {
     timerData.task.destroy();
   }
   const scheduledTime = parseTime(time);
   if (scheduledTime) {
-    timerData.task = cron.schedule(scheduledTime, () => {
-      // Отправка сообщения всем в группе
-      bot.telegram.sendMessage(chatId, message);
-    });
+    timerData.task = cron.schedule(
+      scheduledTime,
+      () => {
+        // Отправка сообщения всем в группе
+        bot.telegram.sendMessage(chatId, message);
+      },
+      {
+        timezone: timezone, // Додайте таймзону
+      }
+    );
   }
 }
 
