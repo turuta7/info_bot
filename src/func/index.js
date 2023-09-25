@@ -36,9 +36,6 @@ function scheduleTimer(time, message, timezone) {
     timerData.task.destroy();
   }
   const scheduledTime = parseTime(time);
-  console.log("===========scheduledTime============");
-  console.log(scheduledTime);
-  console.log("====================================");
   if (scheduledTime) {
     timerData.task = cron.schedule(
       scheduledTime,

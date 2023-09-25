@@ -1,10 +1,4 @@
 const app = require("./server");
-const { DateTime } = require("luxon"); // Додаємо luxon
-const now = DateTime.now().setZone("Europe/Kiev");
-
-console.log("====================================");
-console.log(now.offset * 60 * 1000);
-console.log("====================================");
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
@@ -27,15 +21,17 @@ fs.writeFileSync(lockFilePath, "locked");
 const bot = new Telegraf(process.env.API_TELEGRAM);
 
 bot.command("start", (ctx) => {
-  const keyboard = Markup.keyboard([
-    ["set", "info"],
-    // ["set timer", "kjnk"],
-    // ["Команда 3", "Команда 4"],
-    ["Clean"],
-  ]).resize();
+  const replyMarkup = {
+    remove_keyboard: true,
+  };
 
-  console.log(ctx);
-  ctx.reply("Привет", keyboard);
+  ctx.reply("Клавіатура видалена.", { reply_markup: replyMarkup });
+  const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
+  if (ctx.chat.id !== bot.telegram.botInfo.id) {
+    ctx.reply("Привет", keyboard);
+  } else {
+    ctx.reply("Привет", replyMarkup);
+  }
 });
 
 // Команда /set - начать настройку таймера
