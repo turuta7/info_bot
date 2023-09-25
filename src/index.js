@@ -1,3 +1,4 @@
+const express = require("express");
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
@@ -9,7 +10,7 @@ const {
   cleanTimer,
 } = require("./func");
 // Замените 'YOUR_BOT_TOKEN' на токен вашего бота
-
+const app = express();
 const lockFilePath = path.join(__dirname, "bot.lock");
 // Попытка получить блокировку
 if (fs.existsSync(lockFilePath)) {
@@ -98,8 +99,15 @@ bot.hears("Команда 1", (ctx) => {
 
 // main();
 
-bot.launch().then(() => {
-  console.log("Bot is running...");
+app.get("/", (req, res) => {
+  res.send("OK");
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log("SERVER START");
+  bot.launch();
 });
 
 // В случае завершения работы бота, освободите блокировку
