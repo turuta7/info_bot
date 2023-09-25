@@ -15,10 +15,11 @@ bot.command("start", (ctx) => {
   const keyboard = Markup.keyboard([
     ["Задати текст і час"]["Перевірити дані"],
     ["Очистити"],
-  ]).resize();
+  ])
+    .resize()
+    .extra();
 
-  const userName = ctx.from.first_name;
-  console.log(ctx, userName);
+  const userName = ctx.from.first_name || "";
   ctx.reply(`Привет ${userName}`, keyboard);
 });
 
