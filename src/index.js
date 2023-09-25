@@ -91,7 +91,6 @@ app.listen(port, async () => {
   try {
 
     console.log("SERVER START");
-    bot.launch();
     await bot.startPolling({ restart: true });
     // Enable graceful stop
     process.once("SIGINT", () => bot.stop("SIGINT"));
@@ -112,6 +111,10 @@ app.listen(port, async () => {
           });
       }, 15 * 60 * 1000);
     }
+    setTimeout(() => {
+      bot.launch();
+      console.log("START BOT");
+    }, 30000)
   } catch (error) {
     console.log("ERROR: ", error);
   }
