@@ -20,7 +20,7 @@ if (fs.existsSync(lockFilePath)) {
 }
 let timerAxios = null;
 fs.writeFileSync(lockFilePath, "locked");
-const bot = new Telegraf(process.env.API_TELEGRAM);
+const bot = new Telegraf(process.env.API_TELEGRAM, { polling: true });
 sendBot(bot);
 bot.command("start", (ctx) => {
   const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
