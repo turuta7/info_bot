@@ -74,5 +74,15 @@ bot.hears("Команда 1", (ctx) => {
   ctx.reply("Вы выбрали Команду 1");
 });
 
-// Запуск бота
-bot.launch().then(() => console.log("start OK"));
+const main = async () => {
+  // Запуск бота
+  try {
+    bot.botInfo = await bot.telegram.getMe();
+    console.log("Bot started");
+    bot.launch();
+  } catch (err) {
+    console.error("Ошибка запуска бота", err);
+  }
+};
+
+main();
