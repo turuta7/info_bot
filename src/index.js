@@ -90,11 +90,10 @@ const port = process.env.PORT || 3000;
 app.listen(port, async () => {
   try {
     console.log("SERVER START");
-    await bot.startPolling({ restart: true });
     setTimeout(() => {
       console.log("START BOT");
       bot.launch();
-    }, 30000);
+    }, 50000);
     // Enable graceful stop
     if (process.env.URL && !timerAxios) {
       timerAxios = setInterval(() => {
