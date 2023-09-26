@@ -89,14 +89,13 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, async () => {
   try {
-
     console.log("SERVER START");
     await bot.startPolling({ restart: true });
+    setTimeout(() => {
+      console.log("START BOT");
+      bot.launch();
+    }, 30000);
     // Enable graceful stop
-    process.once("SIGINT", () => bot.stop("SIGINT"));
-    process.once("SIGTERM", () => bot.stop("SIGTERM"));
-    process.on('SIGQUIT', stop);
-    process.on('SIGINT', stop);
     if (process.env.URL && !timerAxios) {
       timerAxios = setInterval(() => {
         axios
@@ -111,10 +110,12 @@ app.listen(port, async () => {
           });
       }, 15 * 60 * 1000);
     }
-    setTimeout(() => {
-      bot.launch();
-      console.log("START BOT");
-    }, 30000)
+    timerAxios && console.log("TIMER START");
+
+    process.once("SIGINT", () => bot.stop("SIGINT"));
+    process.once("SIGTERM", () => bot.stop("SIGTERM"));
+    process.on("SIGQUIT", stop);
+    process.on("SIGINT", stop);
   } catch (error) {
     console.log("ERROR: ", error);
   }
