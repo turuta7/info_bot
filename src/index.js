@@ -20,7 +20,10 @@ if (fs.existsSync(lockFilePath)) {
 }
 let timerAxios = null;
 fs.writeFileSync(lockFilePath, "locked");
-const bot = new Telegraf(process.env.API_TELEGRAM, { polling: true });
+const bot = new Telegraf(process.env.API_TELEGRAM, {
+  polling: true,
+  restart: false,
+});
 sendBot(bot);
 bot.command("start", (ctx) => {
   const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
@@ -107,7 +110,7 @@ app.listen(port, async () => {
             // handle error
             console.log(error);
           });
-      }, 15 * 60 * 1000);
+      }, 5 * 60 * 1000);
     }
     timerAxios && console.log("TIMER START");
 
