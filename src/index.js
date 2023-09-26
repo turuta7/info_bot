@@ -113,8 +113,6 @@ app.listen(port, async () => {
 
     process.once("SIGINT", () => bot.stop("SIGINT"));
     process.once("SIGTERM", () => bot.stop("SIGTERM"));
-    process.on("SIGQUIT", stop);
-    process.on("SIGINT", stop);
   } catch (error) {
     console.log("ERROR: ", error);
   }
