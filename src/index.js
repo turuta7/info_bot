@@ -100,25 +100,23 @@ bot.action(/(\d{2}:\d{2})/, (ctx) => {
 
 // Обработка введенного сообщения
 bot.hears(/.*/, (ctx) => {
-  // console.log("====================================");
-  // console.log(ctx.update.message.from);
-  // console.log(ctx.update.message.chat);
-  // console.log("====================================");
-  if (timerData.time && !timerData.message) {
-    timerData.message = ctx.message.text;
-    const time = timerData.time;
-    ctx.reply(
-      `Настроен таймер для отправки сообщения в ${time} всем в группе.`
-    );
+  if (ctx.update.message.from.id === ctx.update.message.chat.id) {
+    if (timerData.time && !timerData.message) {
+      timerData.message = ctx.message.text;
+      const time = timerData.time;
+      ctx.reply(
+        `Настроен таймер для отправки сообщения в ${time} всем в группе.`
+      );
 
-    timerData.task = scheduleTimer(
-      timerData.time,
-      timerData.message,
-      "Europe/Kiev"
-    );
-    setTimer(timerData);
-  } else {
-    ctx.reply("Пожалуйста, выберите время и введите сообщение для отправкиqq.");
+      timerData.task = scheduleTimer(
+        timerData.time,
+        timerData.message,
+        "Europe/Kiev"
+      );
+      setTimer(timerData);
+    } else {
+      ctx.reply("Пожалуйста, выберите время и введите сообщение для отправки.");
+    }
   }
 });
 
