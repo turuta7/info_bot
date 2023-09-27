@@ -10,6 +10,9 @@ const {
   timerData,
   cleanTimer,
   sendBot,
+  setTimer,
+  allTimes,
+  selectDeleteTimer,
 } = require("./func");
 // Замените 'YOUR_BOT_TOKEN' на токен вашего бота
 const lockFilePath = path.join(__dirname, "bot.lock");
@@ -26,7 +29,11 @@ const bot = new Telegraf(process.env.API_TELEGRAM, {
 });
 sendBot(bot);
 bot.command("start", (ctx) => {
-  const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
+  const keyboard = Markup.keyboard([
+    ["set", "info"],
+    ["delete"],
+    ["Clean"],
+  ]).resize();
 
   // const keyboard = Markup.keyboard([["set", "info"], ["Clean"]]).resize();
   if (ctx.update.message.from.id === ctx.update.message.chat.id) {
@@ -49,16 +56,37 @@ bot.hears("set", (ctx) => {
   timerData.time = null;
 });
 bot.hears("info", (ctx) => {
-  ctx.reply(`time: ${timerData.time}`);
-  ctx.reply(`message: ${timerData.message}`);
-  timerData.task ? ctx.reply(`task: OK`) : ctx.reply(`task: null`);
-  ctx.reply(`dateServer: ${new Date()}`);
+  const keys = Object.keys(allTimes);
+  if (keys.length > 0) {
+    keys.forEach((key) =>
+      ctx.reply(`time: ${key}, message: ${allTimes[key].message}`)
+    );
+  }
+
+  // ctx.reply(`time: ${timerData.time}`);
+  // ctx.reply(`message: ${timerData.message}`);
+  // timerData.task ? ctx.reply(`task: OK`) : ctx.reply(`task: null`);
+  // ctx.reply(`dateServer: ${new Date()}`);
 });
-bot.hears("Clean", (ctx) => {
+bot.hears("delete", (ctx) => {
   ctx.reply(`Clean timer`);
-  cleanTimer();
+  ctx.reply("Выберите что удалить:", {
+    reply_markup: {
+      inline_keyboard: selectDeleteTimer(),
+    },
+  });
 });
 
+bot.hears("Clean", (ctx) => {
+  const keys = Object.keys(allTimes);
+  keys.forEach((key) => delete allTimes[key]);
+  ctx.reply("Очищенно");
+});
+
+bot.action(/(\d{2}:\d{2})_/, (ctx) => {
+  const selectedTime = ctx.match[1];
+  delete allTimes[selectedTime] && ctx.reply("Удалено");
+});
 // Обработка выбора времени с помощью кнопок
 bot.action(/(\d{2}:\d{2})/, (ctx) => {
   if (!timerData.time) {
@@ -82,7 +110,13 @@ bot.hears(/.*/, (ctx) => {
     ctx.reply(
       `Настроен таймер для отправки сообщения в ${time} всем в группе.`
     );
-    scheduleTimer(timerData.time, timerData.message, "Europe/Kiev");
+
+    timerData.task = scheduleTimer(
+      timerData.time,
+      timerData.message,
+      "Europe/Kiev"
+    );
+    setTimer(timerData);
   } else {
     ctx.reply("Пожалуйста, выберите время и введите сообщение для отправкиqq.");
   }

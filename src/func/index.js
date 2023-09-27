@@ -5,6 +5,8 @@ const chatId = process.env.ID_CHAT;
 
 let bot = null;
 
+let allTimes = {};
+
 // Объект для хранения данных о таймере
 const timerData = {
   time: null, // Время для отправки сообщения
@@ -16,6 +18,11 @@ const cleanTimer = () => {
   timerData.time = null;
   timerData.message = null;
   timerData.task = null;
+};
+
+const setTimer = (ctx) => {
+  allTimes[ctx.time] = { task: ctx.task, message: ctx.message };
+  cleanTimer();
 };
 
 function addTimeZone(timeString) {
@@ -69,6 +76,18 @@ function generateTimeButtons() {
   return buttons;
 }
 
+function selectDeleteTimer() {
+  const buttons = [];
+  const keys = Object.keys(allTimes);
+  console.log("keys", keys);
+  console.log(keys.length);
+  for (let key = 0; key < keys.length; key++) {
+    console.log({ text: keys + "_", callback_data: keys + "_key" });
+    buttons.push([{ text: keys[key] + "_", callback_data: keys + "_key" }]);
+  }
+  return buttons;
+}
+
 // Функция для настройки и запуска таймера
 function scheduleTimer(time, message, timezone) {
   if (timerData.task) {
@@ -87,10 +106,14 @@ function scheduleTimer(time, message, timezone) {
   }
   console.log("scheduledTime: ", scheduledTime);
   if (scheduledTime) {
-    timerData.task = cron.schedule(scheduledTime, () => {
+    return cron.schedule(scheduledTime, () => {
       // Отправка сообщения всем в группе
       bot.telegram.sendMessage(chatId, message);
     });
+    // timerData.task = cron.schedule(scheduledTime, () => {
+    //   // Отправка сообщения всем в группе
+    //   bot.telegram.sendMessage(chatId, message);
+    // });
   }
 }
 
@@ -113,4 +136,7 @@ module.exports = {
   timerData,
   cleanTimer,
   sendBot,
+  setTimer,
+  allTimes,
+  selectDeleteTimer,
 };
